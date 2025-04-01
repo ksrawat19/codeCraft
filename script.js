@@ -24,7 +24,32 @@ function run() {
     }
 }
 
-// Function to execute JavaScript with a delay (e.g., 1.75 seconds)
+function showTextarea(language) {
+    // Hide all textareas
+    document.getElementById('html-code').style.display = 'none';
+    document.getElementById('css-code').style.display = 'none';
+    document.getElementById('js-code').style.display = 'none';
+
+    // Show the selected textarea based on the language parameter
+    if (language === 'html') {
+        document.getElementById('html-code').style.display = 'block';
+    } else if (language === 'css') {
+        document.getElementById('css-code').style.display = 'block';
+    } else if (language === 'js') {
+        document.getElementById('js-code').style.display = 'block';
+    }
+}
+
+
+window.onload = function() {
+    // Set the HTML textarea's display style to make sure it's visible
+    document.getElementById('html-code').style.display = "block";
+    // Focus on the HTML textarea
+    document.getElementById('html-code').focus();
+};
+
+
+// Function to execute JavaScript with a delay (e.g., 1.5 seconds)
 let timeoutId; // To track typing delay
 function runAfterDelay() {
     const jsCode = document.getElementById("js-code").value; // Get JavaScript content
@@ -45,7 +70,7 @@ function runAfterDelay() {
             // Handle and display errors
             errorMessage.textContent = `Error: ${error.message}`; // Display error after delay
         }
-    }, 1750); // 1.75-second delay
+    }, 1500); // 1.5-second delay
 }
 
 // * BoilerPlate that i never used

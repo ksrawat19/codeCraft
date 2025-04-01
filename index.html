@@ -8,21 +8,32 @@
     <script src="https://kit.fontawesome.com/2dab9d8934.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <header style="background-color: #000; height: 40px; color: #fff; text-align: center;">
+        <h1>code-craft</h1>
+    </header>
+
     <div class="container">
-        <div class="left">
-            <label><i class="fa-brands fa-html5"></i>HTML</label>
-            <textarea name="" id="html-code" spellcheck="false" onkeyup="run()"></textarea>
+        <div id="activity-bar"></div>
+        <div id="editor">
+            <div id="editor-space">
+                <div id="task-bar">
+                    <label onclick="showTextarea('html')"><i class="fa-brands fa-html5"></i>HTML</label>
+                    <label onclick="showTextarea('css')"><i class="fa-brands fa-css3-alt"></i>CSS</label>
+                    <label onclick="showTextarea('js')"><i class="fa-brands fa-js"></i>JavaScript</label>
+                </div>
 
-            <label><i class="fa-brands fa-css3-alt"></i>CSS</label>
-            <textarea name="" id="css-code" spellcheck="false" onkeyup="run()"></textarea>
-
-            <label><i class="fa-brands fa-js"></i>JavaScript</label>
-            <textarea name="" id="js-code" spellcheck="false" onkeyup="runAfterDelay()"></textarea>
-        </div>
-        <div class="right">
-            <label><i class="fa-solid fa-play"></i>Output</label>
-            <iframe id="output"></iframe>
-            <div id="error-message" style="color: red; font-weight: bold;"></div>
+                <div class="left">
+                    <textarea name="" id="html-code" spellcheck="false" onkeyup="run()"></textarea>
+                    <textarea name="" id="css-code" spellcheck="false" onkeyup="run()"></textarea>
+                    <textarea name="" id="js-code" spellcheck="false" onkeyup="runAfterDelay()"></textarea>
+                </div>
+    
+            </div>
+            <div class="right">
+                <label><i class="fa-solid fa-play"></i>Output</label>
+                <iframe id="output"></iframe>
+                <div id="error-message" style="color: red; font-weight: bold;"></div>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
