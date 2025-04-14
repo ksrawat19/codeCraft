@@ -3,39 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>web-craft</title>
+    <title>web-craft/0.2</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/2dab9d8934.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header style="background-color: #000; height: 40px; color: #fff; text-align: center;">
-        <h1>code-craft</h1>
+        <h1>kraft-kode</h1>
     </header>
-
     <div class="container">
         <div id="activity-bar"></div>
-        <div id="editor">
-            <div id="editor-space">
+        <div id="editor" class="split">
+            <div class="left-section" id="editor-space">
                 <div id="task-bar">
-                    <label onclick="showTextarea('html')"><i class="fa-brands fa-html5"></i>HTML</label>
+                    <label onclick="showTextarea('html')" class="active"><i class="fa-brands fa-html5"></i>HTML</label>
                     <label onclick="showTextarea('css')"><i class="fa-brands fa-css3-alt"></i>CSS</label>
                     <label onclick="showTextarea('js')"><i class="fa-brands fa-js"></i>JavaScript</label>
                 </div>
-
-                <div class="left">
+                <div id="code-editor">        
                     <textarea name="" id="html-code" spellcheck="false" onkeyup="run()"></textarea>
                     <textarea name="" id="css-code" spellcheck="false" onkeyup="run()"></textarea>
-                    <textarea name="" id="js-code" spellcheck="false" onkeyup="runAfterDelay()"></textarea>
+                    <textarea name="" id="js-code" spellcheck="false" onkeyup="run()"></textarea>
                 </div>
-    
             </div>
-            <div class="right">
-                <label><i class="fa-solid fa-play"></i>Output</label>
-                <iframe id="output"></iframe>
-                <div id="error-message" style="color: red; font-weight: bold;"></div>
+            <div class="right-section" id="preview-space">
+                <label><i class="fa-solid fa-play"></i>Preview</label>
+                <div class="reference-space">
+                    <div class="reference">
+                        <iframe id="reference" style="background-color: #cbcbcb;"></iframe>
+                    </div>
+                    <div class="preview">
+                        <iframe id="preview"></iframe>
+                        <div id="error-message"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- JS | S C R I P T S -->
+     
     <script src="script.js"></script>
+    <script src="split.js"></script>
+    <script src="reference.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            hello();
+        });
+    </script>
 </body>
 </html>

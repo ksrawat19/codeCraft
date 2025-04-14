@@ -1,27 +1,78 @@
 // Function to update the iframe with HTML, CSS, and JavaScript
+let timeoutId; // For delaying error messages
 function run() {
-    let htmlCode = document.getElementById("html-code").value; // Get HTML content
-    let cssCode = `<style>${document.getElementById("css-code").value}</style>`; // Get CSS wrapped in <style> tags
-    let jsCode = document.getElementById("js-code").value; // Get JavaScript content
+    const htmlCode = document.getElementById("html-code").value;
+    const cssCode = `<style>${document.getElementById("css-code").value}</style>`;
+    const jsCode = document.getElementById("js-code").value;
 
-    let output = document.getElementById("output"); // Reference the iframe
-    let errorMessage = document.getElementById("error-message"); // Reference error display area
+    const preview = document.getElementById("preview");
+    const errorMessage = document.getElementById("error-message");
 
-    // Clear previous error messages
+    // Clear previous messages
     errorMessage.textContent = "";
+    clearTimeout(timeoutId);
 
+    // Combine all code and include error handler
+    const combinedCode = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            ${cssCode}
+        </head>
+        <body>
+            ${htmlCode}
+
+            <script>
+                // Handle runtime JS errors
+                window.onerror = function(message, source, lineno, colno, error) {
+                    parent.postMessage({ type: "iframeError", message: message }, "*");
+                };
+
+                try {
+                    ${jsCode}
+                } catch (err) {
+                    window.onerror(err.message);
+                }
+            <\/script>
+        </body>
+        </html>
+    `;
+
+    // Validate JavaScript code before injecting it into iframe
     try {
-        // Inject HTML and CSS into the iframe
-        output.contentDocument.body.innerHTML = htmlCode; // Update body with HTML
-        output.contentDocument.head.innerHTML = cssCode; // Update head with CSS
-
-        // Dynamically execute JavaScript
-        output.contentWindow.eval(jsCode); // Evaluate JavaScript code in iframe context
+        new Function(jsCode); // Check for syntax errors
     } catch (error) {
-        // Catch errors, log to console, and display error on the page
-        console.error("JavaScript Error: ", error.message);
-        errorMessage.textContent = `Error: ${error.message}`; // Display error below the editor
+        // Show syntax error message
+        timeoutId = setTimeout(() => {
+            // errorMessage.textContent = `Error: ${error.message}`;
+            errorMessage.textContent = `Error: Invalid identifier detected`;
+            errorMessage.style.color = "red";
+        }, 1000);
+        return; // Stop execution if there's a syntax error
     }
+
+    // Message event listener to catch errors from iframe
+    window.addEventListener(
+        "message",
+        function handleErrorEvent(event) {
+            if (event.data.type === "iframeError") {
+                timeoutId = setTimeout(() => {
+                    // errorMessage.textContent = `Error: ${event.data.message}`;
+                    errorMessage.textContent = `Error: Invalid identifier detected`;
+                    errorMessage.style.color = "red";
+                }, 1000);
+
+                // Remove listener after one use to avoid duplicates
+                window.removeEventListener("message", handleErrorEvent);
+            }
+        },
+        { once: true } // Ensure the listener is automatically removed after first use
+    );
+
+    // Inject code into iframe
+    preview.contentDocument.open();
+    preview.contentDocument.write(combinedCode);
+    preview.contentDocument.close();
 }
 
 function showTextarea(language) {
@@ -30,16 +81,22 @@ function showTextarea(language) {
     document.getElementById('css-code').style.display = 'none';
     document.getElementById('js-code').style.display = 'none';
 
-    // Show the selected textarea based on the language parameter
+    // Remove 'active' class from all labels
+    const labels = document.querySelectorAll('#task-bar label');
+    labels.forEach(label => label.classList.remove('active'));
+
+    // Show the selected textarea and mark the corresponding label as active
     if (language === 'html') {
         document.getElementById('html-code').style.display = 'block';
+        labels[0].classList.add('active'); // Assuming the first label corresponds to HTML
     } else if (language === 'css') {
         document.getElementById('css-code').style.display = 'block';
+        labels[1].classList.add('active'); // Assuming the second label corresponds to CSS
     } else if (language === 'js') {
         document.getElementById('js-code').style.display = 'block';
+        labels[2].classList.add('active'); // Assuming the third label corresponds to JS
     }
 }
-
 
 window.onload = function() {
     // Set the HTML textarea's display style to make sure it's visible
@@ -47,36 +104,3 @@ window.onload = function() {
     // Focus on the HTML textarea
     document.getElementById('html-code').focus();
 };
-
-
-// Function to execute JavaScript with a delay (e.g., 1.5 seconds)
-let timeoutId; // To track typing delay
-function runAfterDelay() {
-    const jsCode = document.getElementById("js-code").value; // Get JavaScript content
-    const output = document.getElementById("output"); // Reference iframe
-    const errorMessage = document.getElementById("error-message"); // Reference error display area
-
-    // Clear previous error messages
-    errorMessage.textContent = "";
-
-    // Clear any previous timeout to restart the countdown
-    clearTimeout(timeoutId);
-
-    // Set a timeout to evaluate JavaScript after 1.75 seconds of typing inactivity
-    timeoutId = setTimeout(() => {
-        try {
-            output.contentWindow.eval(jsCode); // Dynamically execute JavaScript code
-        } catch (error) {
-            // Handle and display errors
-            errorMessage.textContent = `Error: ${error.message}`; // Display error after delay
-        }
-    }, 1500); // 1.5-second delay
-}
-
-// * BoilerPlate that i never used
-// document.getElementById("html-code").value =
-// `<!DOCTYPE html>
-// <html>
-//   <body>
-//   </body>
-// </html>`;
